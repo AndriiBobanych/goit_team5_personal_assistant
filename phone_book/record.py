@@ -71,3 +71,4 @@ class Record:
 
     def delete_birthday(self):
         self.birthday.value = None
+
