@@ -9,7 +9,7 @@ class Record:
         self.phone = [phone] if phone is not None else []
         self.email = [email] if email is not None else []
         self.address = [address] if address is not None else []
-        self.birthday = birthday if birthday is not None else ""
+        self.birthday = birthday
 
     def __repr__(self):
         return f"name: {self.name.value}; " \
