@@ -36,3 +36,14 @@ class ContactBook(UserDict):
         new_contact = Record(name=name, phone=phone, email=email, address=address, birthday=birthday)
         self.data[name.value] = new_contact
 
+    def find_by_name(self, key):
+        matches = []
+        for name in self.data.keys():
+            if name.lower().find(key.lower()) != -1:
+                matches.append(name)
+        if matches == []:
+            return "No mathes."
+        result = ''
+        for name in matches:
+            result += str(self.data[name]) + '\n'
+        return result
