@@ -30,7 +30,7 @@ def handle_folder(file_name: Path):
     file_name.rmdir()
 
 
-def main(folder: Path):
+def sorter(folder: Path):
     parser.scan_folder(folder)
     for file in parser.IMAGES:
         handle_files(file, folder / 'images')
@@ -49,10 +49,10 @@ def main(folder: Path):
     parser.print_lst()
 
 
-if __name__ == '__main__':
-    if sys.argv[1]:
-        folder_for_scan = Path(sys.argv[1])
+def main_func(target):
+    if target:
+        folder_for_scan = Path(target)
         print(f'Work with "{folder_for_scan}" folder...')
-        main(folder_for_scan.resolve())
+        sorter(folder_for_scan.resolve())
     else:
-        print('Not enough arguments')
+        print('Write correct path')
