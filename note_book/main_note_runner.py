@@ -1,13 +1,24 @@
 import functools
+import os
+from pathlib import Path
 
 try:
-    from note_book import *
+    from class_note_book import *
 except:
-    from .note_book import *
+    from .class_note_book import *
 
 
 NOTE = Note()
 NOTEBOOK = NoteBook()
+
+
+def is_exist(note):
+    file_name = note + ".txt"
+    full_pass = os.path.join(Path().resolve(), "notes", file_name)
+    if os.path.exists(full_pass):
+        return True
+    else:
+        return False
 
 
 def command_error_handler(func):
@@ -21,6 +32,7 @@ def command_error_handler(func):
             return str(e)
         except Exception as e:
             return str(e)
+
     return wrapper
 
 
@@ -28,7 +40,7 @@ class CLINoteBook:
 
     @staticmethod
     def help_handler():
-        print("""
+        return ("""
 You can use the following commands for your NoteBook:
     - add note -> to create new note and save into folder 'notes';
     - read note -> to open indicated note and read text inside;
@@ -47,50 +59,57 @@ You can use the following commands for your NoteBook:
     """)
 
     @command_error_handler
-    def add_note_handler(self):
+    def add_note_handler(self=None):
         note = input("Please enter name for note: ")
-        tag = input("Please enter tags (start with #, space to divide): ")
-        text = input("Please enter text for note: ")
+        if note == "":
+            return "Name of note is missed. Please try again"
+        elif is_exist(note):
+            return f"Note with name '{note}' is already exist in folder 'notes'"
+        else:
+            tag = input("Please enter tags (start with #, space to divide): ")
+            text = input("Please enter text for note: ")
+            return NOTEBOOK.add_note(note, tag, text)
 
+    @command_error_handler
+    def read_note_handler(self=None):
+        note = input("Please enter name of note to read it (without '.txt'): ")
         if note != "":
-            NOTEBOOK.add_note(note, tag, text)
+            return NOTEBOOK.read_note(note)
         else:
             return "Name of note is missed. Please try again"
 
     @command_error_handler
-    def read_note_handler(self):
-        note = input("Please enter name of note to read it (without '.txt': ")
+    def delete_note_handler(self=None):
+        note = input("Please enter name of note to delete it (without '.txt'): ")
         if note != "":
-            NOTEBOOK.read_note(note)
+            return NOTEBOOK.delete_note(note)
         else:
             return "Name of note is missed. Please try again"
 
     @command_error_handler
-    def delete_note_handler(self):
-        note = input("Please enter name of note to delete it (without '.txt': ")
-        if note != "":
-            NOTEBOOK.delete_note(note)
-        else:
-            return "Name of note is missed. Please try again"
-
-    @command_error_handler
-    def find_tag_handler(self):
+    def find_tag_handler(self=None):
         tag = input("Please enter 1 tag to find notes (start with #): ")
-        pass
+        if tag != "":
+            return NOTEBOOK.find_by_tag(tag)
+        else:
+            return "Tag for search is missed. Please try again"
 
     @command_error_handler
-    def find_note_handler(self):
-        note = input("Please enter name to find note (without '.txt': ")
-        pass
+    def find_note_handler(self=None):
+        note = input("Please enter name to find note (without '.txt'): ")
+        if note != "":
+            return NOTEBOOK.find_by_name(note)
+        else:
+            return "Name for search is missed. Please try again"
 
     @command_error_handler
-    def show_all_handler(self):
-        NOTEBOOK.show_all_notes()
+    def show_all_handler(self=None):
+        return NOTEBOOK.show_all_notes()
 
     @command_error_handler
     def add_tag_handler(self):
-        note = input("Please enter name of note to update info (without '.txt': ")
-        if CLINoteBook.find_note_handler(note):
+        note = input("Please enter name of note to update info (without '.txt'): ")
+        if is_exist(note):
             tag = input("Please use 1 tag to add to this note (start with #): ")
             note_to_do = NOTEBOOK.read_note(note)
             updated_info = note_to_do.NOTE.add_tag(tag)
@@ -99,9 +118,9 @@ You can use the following commands for your NoteBook:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
     @command_error_handler
-    def add_text_handler(self):
-        note = input("Please enter name of note to update info (without '.txt': ")
-        if CLINoteBook.find_note_handler(note):
+    def add_text_handler(self=None):
+        note = input("Please enter name of note to update info (without '.txt'): ")
+        if is_exist(note):
             text = input("Please write text to add to the current note: ")
             note_to_do = NOTEBOOK.read_note(note)
             updated_info = note_to_do.NOTE.add_text(text)
@@ -109,10 +128,26 @@ You can use the following commands for your NoteBook:
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
+        # note = input("Please enter name of note to update info (without '.txt': ")
+        # try:
+        #     text = input("Please write text to add to the current note: ")
+        #     note_to_do = NOTEBOOK.read_note(note)
+        #     new_dict = {}
+        #     new_lst = []
+        #     new_lst.append(note_to_do["text"])
+        #     new_lst.append(text)
+        #
+        #     new_dict['tag'] = note_to_do["tag"]
+        #     new_dict['text'] = new_lst
+        #     return NOTEBOOK.update_note(note, new_dict)
+        #
+        # except Exception:
+        #     raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
+
     @command_error_handler
-    def change_tag_handler(self):
-        note = input("Please enter name of note to update info (without '.txt': ")
-        if CLINoteBook.find_note_handler(note):
+    def change_tag_handler(self=None):
+        note = input("Please enter name of note to update info (without '.txt'): ")
+        if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
             tag_list = note_to_do["tag"]
             for i, item in enumerate(tag_list, start=0):
@@ -125,10 +160,27 @@ You can use the following commands for your NoteBook:
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
+        # note = input("Please enter name of note to update info (without '.txt': ")
+        # try:
+        #     note_to_do = NOTEBOOK.read_note(note)
+        #     tag_list = note_to_do["tag"].split()
+        #     for i, item in enumerate(tag_list, start=0):
+        #         print(i, item)
+        #     tag_index = int(input("Please enter index of tag that you want to change: "))
+        #     new_tag = input("Please write new tag to add instead old to the current note: ")
+        #     tag_list[tag_index] = new_tag
+        #     new_dict = {}
+        #     new_dict['tag'] = tag_list
+        #     new_dict['text'] = note_to_do["text"]
+        #
+        #     return NOTEBOOK.update_note(note, new_dict)
+        # except Exception:
+        #     raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
+
     @command_error_handler
-    def change_text_handler(self):
-        note = input("Please enter name of note to update info (without '.txt': ")
-        if CLINoteBook.find_note_handler(note):
+    def change_text_handler(self=None):
+        note = input("Please enter name of note to update info (without '.txt'): ")
+        if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
             text_list = note_to_do["text"]
             for i, item in enumerate(text_list, start=0):
@@ -141,10 +193,28 @@ You can use the following commands for your NoteBook:
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
+        # note = input("Please enter name of note to update info (without '.txt'): ")
+        # try:
+        #     # if CLINoteBook.find_note_handler(note):
+        #     note_to_do = NOTEBOOK.read_note(note)
+        #     text_list = note_to_do["text"].split()
+        #     for i, item in enumerate(text_list, start=0):
+        #         print(i, item)
+        #     text_index = int(input("Please enter index of text that you want to change: "))
+        #     new_text = input("Please write new text to add instead old to the current note: ")
+        #     text_list[text_index] = new_text
+        #     new_dict = {}
+        #     new_dict['tag'] = note_to_do["tag"]
+        #     new_dict['text'] = text_list
+        #     return NOTEBOOK.update_note(note, new_dict)
+        #
+        # except Exception:
+        #     raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
+
     @command_error_handler
-    def delete_tag_handler(self):
-        note = input("Please enter name of note to update info (without '.txt': ")
-        if CLINoteBook.find_note_handler(note):
+    def delete_tag_handler(self=None):
+        note = input("Please enter name of note to update info (without '.txt'): ")
+        if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
             tag_list = note_to_do["tag"]
             for i, item in enumerate(tag_list, start=0):
@@ -157,9 +227,9 @@ You can use the following commands for your NoteBook:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
     @command_error_handler
-    def delete_text_handler(self):
-        note = input("Please enter name of note to update info (without '.txt': ")
-        if CLINoteBook.find_note_handler(note):
+    def delete_text_handler(self=None):
+        note = input("Please enter name of note to update info (without '.txt'): ")
+        if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
             text_list = note_to_do["text"]
             for i, item in enumerate(text_list, start=0):
@@ -188,10 +258,14 @@ You can use the following commands for your NoteBook:
         "change text": change_text_handler,
         "delete tag": delete_tag_handler,
         "delete text": delete_text_handler,
-    }
+        }
 
     @staticmethod
     def run_notes_assistant():
+
+        folder = os.path.join(Path().resolve(), 'notes')
+        if not os.path.exists(folder):
+            os.mkdir(folder)
 
         print("Hello! I'm here to assist you with your NoteBook.")
         print("You could enter exact commands if you already know them.\n"
@@ -211,9 +285,8 @@ You can use the following commands for your NoteBook:
                 print(answer)
 
             else:
-                print("Incorrect input.\nPlease check and enter correct command (or 'help').")
+                print("Incorrect input.\nPlease check and enter correct command (or 'help' or 'close').")
 
 
 if __name__ == '__main__':
     CLINoteBook.run_notes_assistant()
-
