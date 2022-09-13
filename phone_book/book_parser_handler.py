@@ -1,31 +1,14 @@
 from decorators import parser_error_handler, command_error_handler
 from validators import phone_validity, email_validity, birthday_validity
-from phone_book.contact_book import ContactBook
-from phone_book.field import Name, Phone, Address, Email, Birthday
+from contact_book import ContactBook
+from field import Name, Phone, Address, Email, Birthday
 
 book_commands_dict = {
     "help",
-    "back",
     "add",
     "change",
     "delete",
-    '''
-    "add contact",
-    "add phone",
-    "add email",
-    "add address",
-    "add birthday",
-    "change phone",
-    "change email",
-    "change address",
-    "delete contact",
-    "delete phone",
-    "delete email",
-    "delete address",
-    "delete birthday",
-    '''
     "days to birthday",
-    "phone",
     "find",
     "show all",
     "close",
@@ -46,51 +29,57 @@ class PhonebookInputParser:
     def _help(self, user_input: str):
         return "help", []
 
-    def _back(self, user_input: str):
-        return "back", []
-
     def _add(self, user_input: str):
-        args = user_input.lstrip("add ")
-        field_name, username, value = args.strip().split(" ")
+        command = user_input.strip().split(" ")
+        field_name = command[1]
         if field_name not in ("contact", "phone", "email", "address", "birthday"):
             raise ValueError
         if field_name == "contact":
-            if username == "":
-                raise ValueError("Bad input")
-            return "add_contact", [username]
-        if username != "" and value != "":
-            return f"add_{field_name}", [username, value] 
+            return "add_contact", []
+        elif field_name == "address":
+            if len(command) != 3:
+                raise ValueError
+            username = command[2]
+            return f"add_address", [username]
         else:
-            raise ValueError
+            if len(command) != 4:
+                raise ValueError 
+            username, value = command[2:]
+            return f"add_{field_name}", [username, value] 
 
     def _change(self, user_input: str):
-        args = user_input.lstrip("change ")
-        field_name, username, value, new_value = args.strip().split(" ")
+        command = user_input.strip().split(" ")
+        field_name = command[1]
         if field_name not in ("phone", "email", "address"):
             raise ValueError
-        if username != "" and value != "" and new_value != "":
-            return f"change_{field_name}", [username, value, new_value] 
+        if field_name == "address":
+            if len(command) != 3:
+                raise ValueError
+            username = command[2]
+            return f"change_address", [username]
         else:
-            raise ValueError
+            if len(command) != 5:
+                raise ValueError 
+            username, value, new_value = command[2:]
+            return f"change_{field_name}", [username, value, new_value] 
 
     def _delete(self, user_input: str):
-        args = user_input.lstrip("delete ")
-        field_name, username, value = args.strip().split(" ")
+        command = user_input.strip().split(" ")
+        field_name = command[1]
         if field_name not in ("contact", "phone", "email", "address", "birthday"):
             raise ValueError
-        if field_name == "contact":
-            if username == "":
+        if field_name in ("contact", "birthday"):
+            if len(command) != 3:
                 raise ValueError
-            return "delete_contact", [username]
-        if username != "" and value != "":
-            return f"delete_{field_name}", [username, value] 
+            username = command[2]
+            return f"delete_{field_name}", [username]
         else:
-            raise ValueError
+            if len(command) != 4:
+                raise ValueError 
+            username, value = command[2:]
+            return f"delete_{field_name}", [username, value] 
 
     def _days_to_birthday(self, user_input: str):
-        return 'add', []
-
-    def _phone(self, user_input: str):
         return 'add', []
 
     def _find(self, user_input: str):
@@ -129,32 +118,39 @@ class CLIphonebook:
     def help_handler(self, *args):
         return """You can use the following commands for your phonebook:
     //first command - than arguments//
-    - add contact "name" "phone-number" "*birthday" -> to add new contact to your phonebook 
-                                                       (*birthday also could be indicated, as option);
-    - add phone "name" "phone-number" -> to add a phone for existing contact with this name;
+    - add contact -> to add new contact to your phonebook 
+    - add phone "name" "phone-number" -> to add a phone for existing contact or to add new contact with phone;
+    - add email "name" "email" -> to add a email for existing contact or to add new contact with email;
+    - add address "name" -> to add a address for existing contact or to add new contact with address;
     - add birthday "name" "birthday" -> to set up new (or change existing) birthday for contact with this name;
     - change phone "name" "old-phone" "new-phone" -> to set up new number for contact with this name;
+    - change email "name" "old-email" "new-email" -> to set up new email for contact with this name;
+    - change address "name" "old-address" "new-address" -> to set up new address for contact with this name;
     - delete contact "name" -> to delete the contact with this name from phonebook (if exist);
     - delete phone "name" "phone-number" -> to delete phone from the contact with this name;
+    - delete email "name" "email" -> to delete email from the contact with this name;
+    - delete address "name" "address" -> to delete address from the contact with this name;
     - delete birthday "name" -> to delete the birthday from the contact with this name;
     - days to birthday "name" -> to check how many days are left fot the contact's birthday (if indicated b/d);
-    - phone "name" -> to see the phone numbers for the contact with this name (if exist);
     - show all -> to see all contacts in your phonebook (if you have added at least 1);
-    - find "name" or "phone" -> to find contacts that are matching to entered key-letters or key-digits;
-    - good bye / close / exit -> to finish work and close session;
+    - find "name" -> to find contacts that are matching to entered key-letters;
+    - close -> to finish work and return to main menu;
     """
 
     @command_error_handler 
-    def back_handler(self, *args):
-        pass
-
-    @command_error_handler 
-    def add_contact_handler(self, username):
+    def add_contact_handler(self):
+        username = input("Please enter name: ")
         if self._book.find_by_name(username) == "No mathes.":
             phone = input("Please enter phone: ")
+            if phone != '' and phone_validity(phone) == False: 
+                return "\nIncorrect input. Try again.\n"
             email = input("Please enter email: ")
+            if email != '' and email_validity(email) == False:
+                return "\nIncorrect input. Try again.\n"
             address = input("Please enter address: ")
             birthday = input("Please enter birthday: ")
+            if birthday != '' and birthday_validity(birthday) == False:
+                return "\nIncorrect input. Try again. Birthday format: dd-mm-yyyy\n"
             self._book.add_new_contact(name=Name(username), phone = Phone(phone), email=Email(email),
                  address=Address(address), birthday=Birthday(birthday))
             return "Contact was added."
@@ -162,96 +158,117 @@ class CLIphonebook:
 
     @command_error_handler 
     def add_phone_handler(self, username, value):
+        if phone_validity(value) == False: 
+                return "\nIncorrect input. Try again.\n"
         if self._book.find_by_name(username) == "No mathes.":
-            self._book.add_record(name=Name(username), phone=Phone(value))
-            return "Number was added."
+            self._book.add_new_contact(name=Name(username), phone=Phone(value))
         else:
             self._book[username].add_to_phone_field(Phone(value))
-            return "Number was added."
+        return "Number was added."
 
     @command_error_handler 
     def add_email_handler(self, username, value):
+        if email_validity(value) == False:
+                return "\nIncorrect input. Try again.\n"
         if self._book.find_by_name(username) == "No mathes.":
-            self._book.add_record(name=Name(username), email=Email(value))
-            return "Email was added."
+            self._book.add_new_contact(name=Name(username), email=Email(value))
         else:
             self._book[username].add_to_email_field(Email(value))
-            return "Email was added."
+        return "Email was added."
 
     @command_error_handler 
-    def add_address_handler(self, username, value):
+    def add_address_handler(self, username):
+        value = input("Please enter address: ")
         if self._book.find_by_name(username) == "No mathes.":
-            self._book.add_record(name=Name(username), address=Address(value))
-            return "Address was added."
+            self._book.add_new_contact(name=Name(username), address=Address(value))
         else:
             self._book[username].add_to_address_field(Address(value))
-            return "Address was added."
+        return "Address was added."
 
     @command_error_handler 
     def add_birthday_handler(self, username, value):
+        if birthday_validity(value) == False:
+                return "\nIncorrect input. Try again. Birthday format: dd-mm-yyyy\n"
         if self._book.find_by_name(username) == "No mathes.":
-            self._book.add_record(name=Name(username), birthday=Birthday(value))
-            return "Birthday was added."
+            self._book.add_new_contact(name=Name(username), birthday=Birthday(value))
         else:
             self._book[username].add_to_birthday_field(Birthday(value))
-            return "Birthday was added."
+        return "Birthday was added."
 
     @command_error_handler 
     def change_phone_handler(self, username, value, new_value):
+        if phone_validity(new_value) == False: 
+                return "\nIncorrect input. Try again.\n"
         if self._book.find_by_name(username) == "No mathes.":
             return "Contact does not exists!"
         else:
-            return self._book.change_phone(Phone(value), Phone(new_value))        
+            return self._book[username].change_phone(value, new_value)        
 
     @command_error_handler 
     def change_email_handler(self, username, value, new_value):
+        if email_validity(new_value) == False: 
+                return "\nIncorrect input. Try again.\n"
         if self._book.find_by_name(username) == "No mathes.":
             return "Contact does not exists!"
         else:
-            return self._book.change_email(Email(value), Email(new_value))    
+            return self._book[username].change_email(value, new_value)    
 
     @command_error_handler 
-    def change_address_handler(self, username, value, new_value):
+    def change_address_handler(self, username):
         if self._book.find_by_name(username) == "No mathes.":
             return "Contact does not exists!"
         else:
-            return self._book.change_address(Address(value), Address(new_value))    
+            value = input("Please enter old address: ")
+            new_value = input("Please enter new address: ")
+            return self._book[username].change_address(value, new_value)    
 
     @command_error_handler 
-    def delete_contact_handler(self, *args):
-        pass
+    def delete_contact_handler(self, username):
+        if self._book.find_by_name(username) != "No mathes.":
+            self._book.pop(username)
+            return f"Contact '{username}' was deleted successfully from your phonebook"
+        else:
+            raise ValueError(f"Contact with name '{username}' does not exist in phonebook.")
 
     @command_error_handler 
-    def delete_phone_handler(self, *args):
-        pass
+    def delete_phone_handler(self, username, value):
+        if self._book.find_by_name(username) != "No mathes.":
+            return self._book[username].delete_phone(value)
+        else:
+            raise ValueError(f"Contact with name '{username}' does not exist in phonebook.")
 
     @command_error_handler 
-    def delete_email_handler(self, *args):
-        pass
+    def delete_email_handler(self, username, value):
+        if self._book.find_by_name(username) != "No mathes.":
+            return self._book[username].delete_email(value)
+        else:
+            raise ValueError(f"Contact with name '{username}' does not exist in phonebook.")
 
     @command_error_handler 
-    def delete_address_handler(self, *args):
-        pass
+    def delete_address_handler(self, username, value):
+        if self._book.find_by_name(username) != "No mathes.":
+            return self._book[username].delete_address(value)
+        else:
+            raise ValueError(f"Contact with name '{username}' does not exist in phonebook.")
 
     @command_error_handler 
-    def delete_birthday_handler(self, *args):
-        pass
+    def delete_birthday_handler(self, username):
+        if self._book.find_by_name(username) != "No mathes.":
+            return self._book[username].delete_birthday()
+        else:
+            raise ValueError(f"Contact with name '{username}' does not exist in phonebook.")
 
     @command_error_handler 
     def days_to_birthday_handler(self, *args):
         pass
 
     @command_error_handler 
-    def phone_handler(self, *args):
-        pass
-
-    @command_error_handler 
-    def find_handler(self, *args):
-        pass
+    def find_handler(self, pattern):
+        return self._book.find_by_name(pattern)
 
     @command_error_handler 
     def show_all_handler(self, *args):
-        pass
+        return next(self._book_iterator)
 
     @command_error_handler 
     def close(self, *args):
@@ -264,8 +281,9 @@ class CLIphonebook:
 
         with ContactBook() as book:
             self.setup_book(book)
+            self._book_iterator = iter(self._book)        
 
-            print('It is Your Contact Book. You can enter "help" to get a list of commands, "back" - return to main menu.')
+            print('It is Your Contact Book. You can enter "help" to get a list of commands, "close" - return to main menu.')
             while True:
                 user_input = input("Please enter command: ")
                 result = self._parsers.parse_user_input(user_input=user_input)
@@ -280,3 +298,7 @@ class CLIphonebook:
                 except SystemExit as e:
                     print(str(e))
                     break
+
+if __name__ == "__main__":
+    cli = CLIphonebook()
+    cli.run()

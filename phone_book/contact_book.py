@@ -62,6 +62,7 @@ class ContactBook(UserDict):
         records = list(self.data.items())
         start_index = self.page * self.__items_per_page
         end_index = (self.page + 1) * self.__items_per_page
+        page = self.page + 1
         if len(records) == 0:
             return 'Your phone book is empty.'
         if len(records) > end_index:
@@ -74,7 +75,7 @@ class ContactBook(UserDict):
             else:
                 to_return = records[0:self.__items_per_page]
                 self.page = 1
-        result = ''
+        result = f'   ---   Page {page}   ---   \n'
         for record in to_return:
             result += str(record[1]) + '\n'
         return result
