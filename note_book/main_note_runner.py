@@ -8,7 +8,6 @@ except:
     from .class_note_book import *
 
 
-# NOTE = Note()
 NOTEBOOK = NoteBook()
 
 
@@ -111,22 +110,17 @@ You can use the following commands for your NoteBook:
         if is_exist(note):
             tag = input("Please use 1 tag to add to this note (start with #): ")
             note_to_do = NOTEBOOK.read_note(note)
-            # old_name = ""
-            # for i, item in enumerate(note_to_do.split('\n'), start=0):
-            #     if i == 0:
-            #         old_name = item
             old_tag = ''
+            old_text = ''
+
             for i, item in enumerate(note_to_do.split('\n'), start=0):
                 if i == 1:
                     old_tag = item + ' '
-            old_text = ''
+
             for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
                 old_text += item + '\n'
 
             return NOTEBOOK.update_note(note, old_tag + tag, old_text)
-            # note_to_do = NOTEBOOK.read_note(note)
-            # note_to_do["tag"].append(tag)
-            # return NOTEBOOK.update_note(note, note_to_do)
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
@@ -136,39 +130,19 @@ You can use the following commands for your NoteBook:
         if is_exist(note):
             text = input("Please write text to add to the current note: ")
             note_to_do = NOTEBOOK.read_note(note)
-            # old_name = ""
-            # for i, item in enumerate(note_to_do.split('\n'), start=0):
-            #     if i == 0:
-            #         old_name = item
             old_tag = ''
+            old_text = ''
+
             for i, item in enumerate(note_to_do.split('\n'), start=0):
                 if i == 1:
                     old_tag = item
-            old_text = ''
+
             for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
                 old_text += item + '\n'
 
             return NOTEBOOK.update_note(note, old_tag, old_text + text)
-            # note_to_do["text"].append(text)
-            # return NOTEBOOK.update_note(note, note_to_do)
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
-
-        # note = input("Please enter name of note to update info (without '.txt': ")
-        # try:
-        #     text = input("Please write text to add to the current note: ")
-        #     note_to_do = NOTEBOOK.read_note(note)
-        #     new_dict = {}
-        #     new_lst = []
-        #     new_lst.append(note_to_do["text"])
-        #     new_lst.append(text)
-        #
-        #     new_dict['tag'] = note_to_do["tag"]
-        #     new_dict['text'] = new_lst
-        #     return NOTEBOOK.update_note(note, new_dict)
-        #
-        # except Exception:
-        #     raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
     @command_error_handler
     def change_tag_handler(self=None):
@@ -176,71 +150,43 @@ You can use the following commands for your NoteBook:
         if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
             tag_list = note_to_do.split('\n')[1]
+            new_tag = ''
+            new_text = ''
+
             for i, item in enumerate(tag_list.split(), start=0):
                 print(i, item)
             tag_index = int(input("Please enter index of tag that you want to change: "))
             tag = input("Please write new tag to add instead old to the current note: ")
-            # note_to_do["tag"][tag_index] = new_tag
-            # old_name = ""
-            # for i, item in enumerate(note_to_do.split('\n'), start=0):
-            #     if i == 0:
-            #         old_name = item
-            new_tag = ''
+
             for i, item in enumerate(tag_list.split(), start=0):
                 if i == tag_index:
                     item = tag
                 new_tag += item + ' '
-            new_text = ''
+
             for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
                 new_text += item + '\n'
 
             return NOTEBOOK.update_note(note, new_tag, new_text)
-            # return NOTEBOOK.update_note(note, note_to_do)
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
-
-        # note = input("Please enter name of note to update info (without '.txt': ")
-        # try:
-        #     note_to_do = NOTEBOOK.read_note(note)
-        #     tag_list = note_to_do["tag"].split()
-        #     for i, item in enumerate(tag_list, start=0):
-        #         print(i, item)
-        #     tag_index = int(input("Please enter index of tag that you want to change: "))
-        #     new_tag = input("Please write new tag to add instead old to the current note: ")
-        #     tag_list[tag_index] = new_tag
-        #     new_dict = {}
-        #     new_dict['tag'] = tag_list
-        #     new_dict['text'] = note_to_do["text"]
-        #
-        #     return NOTEBOOK.update_note(note, new_dict)
-        # except Exception:
-        #     raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
     @command_error_handler
     def change_text_handler(self=None):
         note = input("Please enter name of note to update info (without '.txt'): ")
         if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
-            # text_list = note_to_do["text"]
-            # old_name = ""
-            # for i, item in enumerate(note_to_do.split('\n'), start=0):
-            #     if i == 0:
-            #         old_name = item
             new_tag = ''
+            new_text = ''
+
+            for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
+                print(i, item)
+            text_index = int(input("Please enter index of text that you want to change: "))
+            text = input("Please write new text to add instead old to the current note: ")
+
             for i, item in enumerate(note_to_do.split('\n'), start=0):
                 if i == 1:
                     new_tag = item
 
-            for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
-                print(i, item)
-            new_text = ''
-
-            # for i, item in enumerate(text_list, start=0):
-            #     print(i, item)
-            text_index = int(input("Please enter index of text that you want to change: "))
-            text = input("Please write new text to add instead old to the current note: ")
-            # note_to_do["text"][text_index] = new_text
-            # return NOTEBOOK.update_note(note, note_to_do)
             for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
                 if i == text_index:
                     item = text
@@ -250,46 +196,24 @@ You can use the following commands for your NoteBook:
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
-        # note = input("Please enter name of note to update info (without '.txt'): ")
-        # try:
-        #     # if CLINoteBook.find_note_handler(note):
-        #     note_to_do = NOTEBOOK.read_note(note)
-        #     text_list = note_to_do["text"].split()
-        #     for i, item in enumerate(text_list, start=0):
-        #         print(i, item)
-        #     text_index = int(input("Please enter index of text that you want to change: "))
-        #     new_text = input("Please write new text to add instead old to the current note: ")
-        #     text_list[text_index] = new_text
-        #     new_dict = {}
-        #     new_dict['tag'] = note_to_do["tag"]
-        #     new_dict['text'] = text_list
-        #     return NOTEBOOK.update_note(note, new_dict)
-        #
-        # except Exception:
-        #     raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
-
     @command_error_handler
     def delete_tag_handler(self=None):
         note = input("Please enter name of note to update info (without '.txt'): ")
         if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
             tag_list = note_to_do.split('\n')[1]
-            # tag_list = note_to_do["tag"]
+            new_tag = ''
+            new_text = ''
+
             for i, item in enumerate(tag_list.split(), start=0):
                 print(i, item)
             tag_index = int(input("Please enter index of tag that you want to delete: "))
-            # note_to_do["tag"].pop(tag_index)
-            # return NOTEBOOK.update_note(note, note_to_do)
-            # old_name = ""
-            # for i, item in enumerate(note_to_do.split('\n'), start=0):
-            #     if i == 0:
-            #         old_name = item
-            new_tag = ''
+
             for i, item in enumerate(tag_list.split(), start=0):
                 if i == tag_index:
                     item = ""
                 new_tag += item + ' '
-            new_text = ''
+
             for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
                 new_text += item + '\n'
 
@@ -302,29 +226,24 @@ You can use the following commands for your NoteBook:
         note = input("Please enter name of note to update info (without '.txt'): ")
         if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
-            # text_list = note_to_do["text"]
             tag_list = note_to_do.split('\n')[1]
-            # old_name = ""
-            # for i, item in enumerate(note_to_do.split('\n'), start=0):
-            #     if i == 0:
-            #         old_name = item
             new_tag = ''
-            for i, item in enumerate(tag_list.split('\n'), start=0):
-                # print(i, item)
-                if i == 0:
-                    new_tag = item
             new_text = ''
+
             for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
                 print(i, item)
             text_index = int(input("Please enter index of text that you want to delete: "))
-            # note_to_do["text"].pop(text_index)
+
+            for i, item in enumerate(tag_list.split('\n'), start=0):
+                if i == 0:
+                    new_tag = item
+
             for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
                 if i == text_index:
                     item = ''
                 new_text += item + '\n'
 
             return NOTEBOOK.update_note(note, new_tag, new_text.strip())
-            # return NOTEBOOK.update_note(note, note_to_do)
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
