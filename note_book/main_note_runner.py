@@ -8,7 +8,7 @@ except:
     from .class_note_book import *
 
 
-NOTE = Note()
+# NOTE = Note()
 NOTEBOOK = NoteBook()
 
 
@@ -32,7 +32,6 @@ def command_error_handler(func):
             return str(e)
         except Exception as e:
             return str(e)
-
     return wrapper
 
 
@@ -107,13 +106,27 @@ You can use the following commands for your NoteBook:
         return NOTEBOOK.show_all_notes()
 
     @command_error_handler
-    def add_tag_handler(self):
+    def add_tag_handler(self=None):
         note = input("Please enter name of note to update info (without '.txt'): ")
         if is_exist(note):
             tag = input("Please use 1 tag to add to this note (start with #): ")
             note_to_do = NOTEBOOK.read_note(note)
-            updated_info = note_to_do.NOTE.add_tag(tag)
-            NOTEBOOK.update_note(note, updated_info)
+            # old_name = ""
+            # for i, item in enumerate(note_to_do.split('\n'), start=0):
+            #     if i == 0:
+            #         old_name = item
+            old_tag = ''
+            for i, item in enumerate(note_to_do.split('\n'), start=0):
+                if i == 1:
+                    old_tag = item + ' '
+            old_text = ''
+            for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
+                old_text += item + '\n'
+
+            return NOTEBOOK.update_note(note, old_tag + tag, old_text)
+            # note_to_do = NOTEBOOK.read_note(note)
+            # note_to_do["tag"].append(tag)
+            # return NOTEBOOK.update_note(note, note_to_do)
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
@@ -123,8 +136,21 @@ You can use the following commands for your NoteBook:
         if is_exist(note):
             text = input("Please write text to add to the current note: ")
             note_to_do = NOTEBOOK.read_note(note)
-            updated_info = note_to_do.NOTE.add_text(text)
-            NOTEBOOK.update_note(note, updated_info)
+            # old_name = ""
+            # for i, item in enumerate(note_to_do.split('\n'), start=0):
+            #     if i == 0:
+            #         old_name = item
+            old_tag = ''
+            for i, item in enumerate(note_to_do.split('\n'), start=0):
+                if i == 1:
+                    old_tag = item
+            old_text = ''
+            for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
+                old_text += item + '\n'
+
+            return NOTEBOOK.update_note(note, old_tag, old_text + text)
+            # note_to_do["text"].append(text)
+            # return NOTEBOOK.update_note(note, note_to_do)
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
@@ -149,14 +175,27 @@ You can use the following commands for your NoteBook:
         note = input("Please enter name of note to update info (without '.txt'): ")
         if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
-            tag_list = note_to_do["tag"]
-            for i, item in enumerate(tag_list, start=0):
+            tag_list = note_to_do.split('\n')[1]
+            for i, item in enumerate(tag_list.split(), start=0):
                 print(i, item)
             tag_index = int(input("Please enter index of tag that you want to change: "))
-            old_tag = tag_list[tag_index]
-            new_tag = input("Please write new tag to add instead old to the current note: ")
-            updated_info = note_to_do.NOTE.change_tag(old_tag, new_tag)
-            NOTEBOOK.update_note(note, updated_info)
+            tag = input("Please write new tag to add instead old to the current note: ")
+            # note_to_do["tag"][tag_index] = new_tag
+            # old_name = ""
+            # for i, item in enumerate(note_to_do.split('\n'), start=0):
+            #     if i == 0:
+            #         old_name = item
+            new_tag = ''
+            for i, item in enumerate(tag_list.split(), start=0):
+                if i == tag_index:
+                    item = tag
+                new_tag += item + ' '
+            new_text = ''
+            for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
+                new_text += item + '\n'
+
+            return NOTEBOOK.update_note(note, new_tag, new_text)
+            # return NOTEBOOK.update_note(note, note_to_do)
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
@@ -182,14 +221,32 @@ You can use the following commands for your NoteBook:
         note = input("Please enter name of note to update info (without '.txt'): ")
         if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
-            text_list = note_to_do["text"]
-            for i, item in enumerate(text_list, start=0):
+            # text_list = note_to_do["text"]
+            # old_name = ""
+            # for i, item in enumerate(note_to_do.split('\n'), start=0):
+            #     if i == 0:
+            #         old_name = item
+            new_tag = ''
+            for i, item in enumerate(note_to_do.split('\n'), start=0):
+                if i == 1:
+                    new_tag = item
+
+            for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
                 print(i, item)
+            new_text = ''
+
+            # for i, item in enumerate(text_list, start=0):
+            #     print(i, item)
             text_index = int(input("Please enter index of text that you want to change: "))
-            old_text = text_list[text_index]
-            new_text = input("Please write new text to add instead old to the current note: ")
-            updated_info = note_to_do.NOTE.change_text(old_text, new_text)
-            NOTEBOOK.update_note(note, updated_info)
+            text = input("Please write new text to add instead old to the current note: ")
+            # note_to_do["text"][text_index] = new_text
+            # return NOTEBOOK.update_note(note, note_to_do)
+            for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
+                if i == text_index:
+                    item = text
+                new_text += item + '\n'
+
+            return NOTEBOOK.update_note(note, new_tag, new_text)
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
@@ -216,13 +273,27 @@ You can use the following commands for your NoteBook:
         note = input("Please enter name of note to update info (without '.txt'): ")
         if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
-            tag_list = note_to_do["tag"]
-            for i, item in enumerate(tag_list, start=0):
+            tag_list = note_to_do.split('\n')[1]
+            # tag_list = note_to_do["tag"]
+            for i, item in enumerate(tag_list.split(), start=0):
                 print(i, item)
             tag_index = int(input("Please enter index of tag that you want to delete: "))
-            tag_to_del = tag_list[tag_index]
-            updated_info = note_to_do.NOTE.delete_tag(tag_to_del)
-            NOTEBOOK.update_note(note, updated_info)
+            # note_to_do["tag"].pop(tag_index)
+            # return NOTEBOOK.update_note(note, note_to_do)
+            # old_name = ""
+            # for i, item in enumerate(note_to_do.split('\n'), start=0):
+            #     if i == 0:
+            #         old_name = item
+            new_tag = ''
+            for i, item in enumerate(tag_list.split(), start=0):
+                if i == tag_index:
+                    item = ""
+                new_tag += item + ' '
+            new_text = ''
+            for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
+                new_text += item + '\n'
+
+            return NOTEBOOK.update_note(note, new_tag.strip(), new_text)
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
@@ -231,13 +302,29 @@ You can use the following commands for your NoteBook:
         note = input("Please enter name of note to update info (without '.txt'): ")
         if is_exist(note):
             note_to_do = NOTEBOOK.read_note(note)
-            text_list = note_to_do["text"]
-            for i, item in enumerate(text_list, start=0):
+            # text_list = note_to_do["text"]
+            tag_list = note_to_do.split('\n')[1]
+            # old_name = ""
+            # for i, item in enumerate(note_to_do.split('\n'), start=0):
+            #     if i == 0:
+            #         old_name = item
+            new_tag = ''
+            for i, item in enumerate(tag_list.split('\n'), start=0):
+                # print(i, item)
+                if i == 0:
+                    new_tag = item
+            new_text = ''
+            for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
                 print(i, item)
             text_index = int(input("Please enter index of text that you want to delete: "))
-            text_to_del = text_list[text_index]
-            updated_info = note_to_do.NOTE.delete_text(text_to_del)
-            NOTEBOOK.update_note(note, updated_info)
+            # note_to_do["text"].pop(text_index)
+            for i, item in enumerate(note_to_do.split('\n')[2:], start=0):
+                if i == text_index:
+                    item = ''
+                new_text += item + '\n'
+
+            return NOTEBOOK.update_note(note, new_tag, new_text.strip())
+            # return NOTEBOOK.update_note(note, note_to_do)
         else:
             raise ValueError(f"Note with name '{note}' does not exist in NoteBook.")
 
@@ -250,7 +337,7 @@ You can use the following commands for your NoteBook:
 
         "find by tag": find_tag_handler,
         "find by name": find_note_handler,
-        "show all notes": show_all_handler,
+        "show all": show_all_handler,
 
         "add tag": add_tag_handler,
         "add text": add_text_handler,
@@ -274,7 +361,7 @@ You can use the following commands for your NoteBook:
               "  close -> to finish work with NoteBook")
 
         while True:
-            command = input('Please enter your command:').lower()
+            command = input("Please enter your command: ").lower().strip()
 
             if command == "close":
                 raise SystemExit("\nThank you for using NoteBook.\nSee you later!\n")
@@ -283,6 +370,18 @@ You can use the following commands for your NoteBook:
                 handler = CLINoteBook.notes_commands_dict[command]
                 answer = handler()
                 print(answer)
+
+            # else:
+            #     list_comm = []
+            #     for k in CLINoteBook.notes_commands_dict.keys():
+            #         for item in k.split():
+            #             if command in item:
+            #                 list_comm.append(k)
+            #     if list_comm:
+            #         print('You mean commands: ')
+            #         print(*list_comm,sep=',')
+            #     else:
+            #         print("Incorrect input.\nPlease check and enter correct command (or 'help' or 'close').")
 
             else:
                 print("Incorrect input.\nPlease check and enter correct command (or 'help' or 'close').")
