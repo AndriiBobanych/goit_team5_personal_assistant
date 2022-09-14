@@ -8,7 +8,7 @@ book_commands_dict = {
     "add",
     "change",
     "delete",
-    "days to birthday",
+    "nearby birthday",
     "find",
     "show all",
     "close",
@@ -20,7 +20,8 @@ class PhonebookInputParser:
     @parser_error_handler
     def parse_user_input(self, user_input: str) -> tuple[str, list]:
         for command in book_commands_dict:
-            normalized_input = " ".join(user_input.lower().strip().split(" "))
+            normalized_input = " ".join(user_input.strip().split(" "))
+            #normalized_input = " ".join(user_input.lower().strip().split(" "))
             if normalized_input.startswith(command):
                 parser = getattr(self, "_" + command.replace(" ", "_"))
                 return parser(user_input=normalized_input)
@@ -79,8 +80,12 @@ class PhonebookInputParser:
             username, value = command[2:]
             return f"delete_{field_name}", [username, value] 
 
-    def _days_to_birthday(self, user_input: str):
-        return 'add', []
+    def _nearby_birthday(self, user_input: str):
+        command = user_input.strip().split(" ")
+        if len(command) != 3:
+            raise ValueError
+        days = int(command[2])
+        return 'nearby_birthday', [days]
 
     def _find(self, user_input: str):
         input_list = user_input.lstrip("find ").strip().split(" ")
@@ -123,15 +128,18 @@ class CLIphonebook:
     - add email "name" "email" -> to add a email for existing contact or to add new contact with email;
     - add address "name" -> to add a address for existing contact or to add new contact with address;
     - add birthday "name" "birthday" -> to set up new (or change existing) birthday for contact with this name;
+
     - change phone "name" "old-phone" "new-phone" -> to set up new number for contact with this name;
     - change email "name" "old-email" "new-email" -> to set up new email for contact with this name;
     - change address "name" "old-address" "new-address" -> to set up new address for contact with this name;
+
     - delete contact "name" -> to delete the contact with this name from phonebook (if exist);
     - delete phone "name" "phone-number" -> to delete phone from the contact with this name;
     - delete email "name" "email" -> to delete email from the contact with this name;
     - delete address "name" "address" -> to delete address from the contact with this name;
     - delete birthday "name" -> to delete the birthday from the contact with this name;
-    - days to birthday "name" -> to check how many days are left fot the contact's birthday (if indicated b/d);
+
+    - nearby birthday "days" -> to show who celebrating birthdays in the next days;
     - show all -> to see all contacts in your phonebook (if you have added at least 1);
     - find "name" -> to find contacts that are matching to entered key-letters;
     - close -> to finish work and return to main menu;
@@ -151,7 +159,7 @@ class CLIphonebook:
             birthday = input("Please enter birthday: ")
             if birthday != '' and birthday_validity(birthday) == False:
                 return "\nIncorrect input. Try again. Birthday format: dd-mm-yyyy\n"
-            self._book.add_new_contact(name=Name(username), phone = Phone(phone), email=Email(email),
+            self._book.add_new_contact(name=Name(username), phone=Phone(phone), email=Email(email),
                  address=Address(address), birthday=Birthday(birthday))
             return "Contact was added."
         raise ValueError("You already add this contact.")
@@ -259,8 +267,8 @@ class CLIphonebook:
             raise ValueError(f"Contact with name '{username}' does not exist in phonebook.")
 
     @command_error_handler 
-    def days_to_birthday_handler(self, *args):
-        pass
+    def nearby_birthday_handler(self, days):
+        return self._book.nearby_birthday(days)
 
     @command_error_handler 
     def find_handler(self, pattern):

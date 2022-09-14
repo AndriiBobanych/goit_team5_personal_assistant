@@ -1,8 +1,8 @@
 from collections import UserDict
 import pickle
-
 from field import Field, Name, Phone, Email, Address, Birthday
 from record import Record
+from datetime import datetime
 
 
 class ContactBook(UserDict):
@@ -45,7 +45,7 @@ class ContactBook(UserDict):
     def find_by_name(self, key):
         matches = []
         for name in self.data.keys():
-            if name.lower().find(key.lower()) != -1:
+            if name.lower().strip().find(key.lower().strip()) != -1:
                 matches.append(name)
         if matches == []:
             return "No mathes."
@@ -78,4 +78,25 @@ class ContactBook(UserDict):
         result = f'   ---   Page {page}   ---   \n'
         for record in to_return:
             result += str(record[1]) + '\n'
+        return result
+
+    def nearby_birthday(self, n_days):
+        now = datetime.now().timetuple().tm_yday
+        future = now + int(n_days)
+        new_year_future = 0
+        if future > 365:
+            new_year_future = future - 365
+            future = 365
+        fut_list = []
+        for k, v in self.data.items():  
+                if v.birthday != None:
+                    s = datetime.strptime(v.birthday.value,'%d-%m-%Y').timetuple().tm_yday
+                    if future >= s >= now or 1 <= s <= new_year_future:
+                        fut_list.append(f"{k}: {v.birthday.value}")
+        if fut_list == []:
+            return f'No contacts are celebrating their birthday in the next {n_days} days'
+        else:
+            result = f"Following users are celebrating birthdays in the next {n_days} days:\n"
+            for name in fut_list:
+                result += name + '\n'
         return result

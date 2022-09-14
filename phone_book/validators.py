@@ -32,6 +32,5 @@ def birthday_validity(birthday: str):
         if datetime.strptime(str(birthday), "%d-%m-%Y").date():
             return True
     except ValueError:
-        # print(f"Entered {birthday} is not correct date. Please use format: 'dd-mm-yyyy'")
         return False
 

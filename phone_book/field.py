@@ -1,5 +1,3 @@
-
-
 class Field:
     def __init__(self, value: str):
         self._value = None

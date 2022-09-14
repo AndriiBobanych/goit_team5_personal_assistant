@@ -57,12 +57,6 @@ class Record:
                 self.phone.remove(p) 
                 return 'Done!'
         return f"Contact does not contain such phone number: {phone}"
-        '''
-        try:
-            self.phone.remove(phone)
-        except ValueError:
-            print(f"Contact does not contain such phone number: {phone}")
-        '''
 
     def delete_email(self, email):
         for e in self.email:
@@ -70,12 +64,6 @@ class Record:
                 self.email.remove(e) 
                 return 'Done!'
         return f"Contact does not contain such email: {email}"
-        '''
-        try:
-            self.email.remove(email)
-        except ValueError:
-            print(f"Contact does not contain such email: {email}")
-        '''
 
     def delete_address(self, address: Address):
         for a in self.address:
@@ -83,16 +71,9 @@ class Record:
                 self.address.remove(a) 
                 return 'Done!'
         return f"Contact does not contain such address: {address}"
-        '''
-        try:
-            self.address.remove(address)
-        except ValueError:
-            print(f"Contact does not contain such address: {address}")
-        '''
 
     def delete_birthday(self):
         if self.birthday == None:
             return "Contact doesn't have birthday."
         self.birthday.value = None
         return "Done!"
-
