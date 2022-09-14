@@ -15,6 +15,9 @@ def parser_error_handler(func):
         except TypeError as e:
             print("\nIncorrect input.\nPlease check details and enter correct command.")
             return str(e)
+        except IndexError as e:
+            print("\nIncorrect input.\nPlease check details and enter correct command.")
+            return str(e)
     return wrapper
 
 

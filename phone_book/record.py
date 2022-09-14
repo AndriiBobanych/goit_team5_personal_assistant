@@ -30,45 +30,50 @@ class Record:
     def add_to_birthday_field(self, birthday: Birthday):
         self.birthday = birthday
 
-    def change_phone(self, old_number: Phone, new_number: Phone):
-        try:
-            self.phone.remove(old_number)
-            self.phone.append(new_number)
-        except ValueError:
-            return f"Contact does not contain such phone number: {old_number}"
+    def change_phone(self, old_number, new_number):
+        for p in self.phone:
+            if p.value == old_number:
+                p.value = new_number
+                return 'Done!'
+        return f"Contact does not contain such phone number: {old_number}"
 
-    def change_email(self, old_email: Email, new_email: Email):
-        try:
-            self.email.remove(old_email)
-            self.email.append(new_email)
-        except ValueError:
-            return f"Contact does not contain such email: {old_email}"
+    def change_email(self, old_email, new_email):
+        for e in self.email:
+            if e.value == old_email:
+                e.value = new_email
+                return 'Done!'
+        return f"Contact does not contain such email: {old_email}"
 
-    def change_address(self, old_address: Address, new_address: Address):
-        try:
-            self.address.remove(old_address)
-            self.address.append(new_address)
-        except ValueError:
-            return f"Contact does not contain such address: {old_address}"
+    def change_address(self, old_address, new_address):
+        for a in self.address:
+            if a.value == old_address:
+                a.value = new_address
+                return 'Done!'
+        return f"Contact does not contain such address: {old_address}"
 
-    def delete_phone(self, phone: Phone):
-        try:
-            self.phone.remove(phone)
-        except ValueError:
-            print(f"Contact does not contain such phone number: {phone}")
+    def delete_phone(self, phone):
+        for p in self.phone:
+            if p.value == phone:
+                self.phone.remove(p) 
+                return 'Done!'
+        return f"Contact does not contain such phone number: {phone}"
 
-    def delete_email(self, email: Email):
-        try:
-            self.email.remove(email)
-        except ValueError:
-            print(f"Contact does not contain such email: {email}")
+    def delete_email(self, email):
+        for e in self.email:
+            if e.value == email:
+                self.email.remove(e) 
+                return 'Done!'
+        return f"Contact does not contain such email: {email}"
 
     def delete_address(self, address: Address):
-        try:
-            self.address.remove(address)
-        except ValueError:
-            print(f"Contact does not contain such address: {address}")
+        for a in self.address:
+            if a.value == address:
+                self.address.remove(a) 
+                return 'Done!'
+        return f"Contact does not contain such address: {address}"
 
     def delete_birthday(self):
+        if self.birthday == None:
+            return "Contact doesn't have birthday."
         self.birthday.value = None
-
+        return "Done!"
