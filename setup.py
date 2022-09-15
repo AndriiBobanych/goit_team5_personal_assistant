@@ -4,7 +4,7 @@ setup(
     name='goit_team5_personal_assistant',
     version='1.0.0',
     description='Package with scripts for using CLI Bot assistant',
-    url='https://github.com/AndriiBobanych/team5_personal_assistant',
+    url='https://github.com/AndriiBobanych/goit_team5_personal_assistant',
     author1='User_friendly_team',
     readme="README.md",
     license="LICENSE",

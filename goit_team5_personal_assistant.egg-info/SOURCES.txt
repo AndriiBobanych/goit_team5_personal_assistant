@@ -1,0 +1,12 @@
+MANIFEST.in
+setup.py
+goit_team5_personal_assistant/__init__.py
+goit_team5_personal_assistant/main.py
+goit_team5_personal_assistant/main_folder_sorter.py
+goit_team5_personal_assistant/main_note_book.py
+goit_team5_personal_assistant/main_phone_book.py
+goit_team5_personal_assistant.egg-info/PKG-INFO
+goit_team5_personal_assistant.egg-info/SOURCES.txt
+goit_team5_personal_assistant.egg-info/dependency_links.txt
+goit_team5_personal_assistant.egg-info/entry_points.txt
+goit_team5_personal_assistant.egg-info/top_level.txt
