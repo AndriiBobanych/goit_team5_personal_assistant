@@ -10,7 +10,7 @@ Personal Assistant is a usefull programm with CLI-interface that contains Contac
 - parse folder by categories.
 ## **Installation**
 ```bash
-pip install -i https://test.pypi.org/simple/ team5-personal-assistant
+pip install -i https://test.pypi.org/simple/ goit-team5-personal-assistant==1.0.0
 ```
 ## **How to work with Personal Assistant**
 After you opened Personal Assistant please select category: Contact Book, Notes or Folder Cleaner. After that you can use following commands.

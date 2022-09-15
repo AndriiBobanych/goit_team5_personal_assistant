@@ -1,0 +1,2 @@
+dist
+goit_team5_personal_assistant
