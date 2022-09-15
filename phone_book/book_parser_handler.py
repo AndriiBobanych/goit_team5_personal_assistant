@@ -131,7 +131,7 @@ class CLIphonebook:
 
     - change phone "name" "old-phone" "new-phone" -> to set up new number for contact with this name;
     - change email "name" "old-email" "new-email" -> to set up new email for contact with this name;
-    - change address "name" "old-address" "new-address" -> to set up new address for contact with this name;
+    - change address "name" -> to set up new address for contact with this name;
 
     - delete contact "name" -> to delete the contact with this name from phonebook (if exist);
     - delete phone "name" "phone-number" -> to delete phone from the contact with this name;
@@ -139,7 +139,7 @@ class CLIphonebook:
     - delete address "name" "address" -> to delete address from the contact with this name;
     - delete birthday "name" -> to delete the birthday from the contact with this name;
 
-    - nearby birthday "days" -> to show who celebrating birthdays in the next days;
+    - nearby birthday "days" -> to show who celebrate birthdays in the next days;
     - show all -> to see all contacts in your phonebook (if you have added at least 1);
     - find "name" -> to find contacts that are matching to entered key-letters;
     - close -> to finish work and return to main menu;
