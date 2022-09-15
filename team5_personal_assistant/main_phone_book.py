@@ -625,8 +625,9 @@ class CLIPhoneBook:
                     command_response = command_function(*arguments)
                     print(command_response)
                 except SystemExit as e:
-                    print(str(e))
-                    break
+                    return str(e)
+                    # print(str(e))
+                    # break
 
         # with ContactBook() as book:
         #     self.setup_book(book)
@@ -662,9 +663,9 @@ class CLIPhoneBook:
         #             print(command_response)
 
 
-def run_phone_assistant():
-    ph_bot = CLIPhoneBook()
-    ph_bot.run_phone_assistant()
+# def run_phone_assistant():
+#     ph_bot = CLIPhoneBook()
+#     ph_bot.run_phone_assistant()
 
 
 if __name__ == "__main__":

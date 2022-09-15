@@ -223,8 +223,9 @@ def run_sorter_assistant():
             answer = handler()
             print(answer)
         elif user_input.lower() == 'close'.lower():
-            print("\nThank you for using Folder Sorter Bot.\nSee you later!\n")
-            break
+            return "\nThank you for using Folder Sorter Bot.\nSee you later!\n"
+            # print("\nThank you for using Folder Sorter Bot.\nSee you later!\n")
+            # break
         else:
             list_comm = []
             for k in sorter_commands_dict.keys():

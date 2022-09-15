@@ -1,7 +1,12 @@
 # from phone_book.book_parser_handler import CLIPhoneBook
-from main_phone_book import run_phone_assistant
-from main_note_book import CLINoteBook
-from main_folder_sorter import run_sorter_assistant
+# from main_phone_book import run_phone_assistant
+
+from .main_phone_book import CLIPhoneBook
+from .main_note_book import CLINoteBook
+from .main_folder_sorter import run_sorter_assistant
+
+
+CLIpb = CLIPhoneBook()
 
 
 def bot_help():
@@ -14,7 +19,7 @@ def bot_help():
 
 bot_command_dict = {
     # "1": CLIPhoneBook.run_phone_assistant,
-    "1": run_phone_assistant,
+    "1": CLIpb.run_phone_assistant,
     "2": CLINoteBook.run_notes_assistant,
     "3": run_sorter_assistant,
     "#": bot_help,

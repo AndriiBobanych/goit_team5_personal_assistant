@@ -405,8 +405,8 @@ You can use the following commands for your NoteBook:
 
             if command == "close":
                 # raise SystemExit("\nThank you for using NoteBook Bot.\nSee you later!\n")
-                print("\nThank you for using NoteBook Bot.\nSee you later!\n")
-                break
+                return "\nThank you for using NoteBook Bot.\nSee you later!\n"
+                # break
 
             elif command in CLINoteBook.notes_commands_dict.keys():
                 handler = CLINoteBook.notes_commands_dict[command]
