@@ -14,7 +14,7 @@ Personal Assistant is a usefull programm with CLI-interface that contains Contac
 - add notes with tags, change and delete it;
 - parse folder by categories.
 
-## **Instalation**
+## **Installation**
 
 ```bash
 pip install -i https://test.pypi.org/simple/ team5-personal-assistant
@@ -75,7 +75,7 @@ After you opened Personal Assistant please select category: Contact Book, Notes 
 
 ---
 
-## About our command
+## About our team
 
 ### User Friendly Team
 
