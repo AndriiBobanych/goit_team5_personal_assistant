@@ -1,2 +1,0 @@
-[console_scripts]
-CLIbot = team5_personal_assistant.main:personal_assistant
